@@ -20,6 +20,16 @@ lxid:LogEventTemplate_c61b52d9
         logex:keyword                  "pam" , "session close" , "cron" , "user" ;
         logex:pattern                  "pam_unix(cron:<*>): session closed for user <*>" .
 
+lxid:LogEventTemplate_58c5527c
+        a                              logex:LogEventTemplate ;
+        rdfs:label                     "58c5527c" ;
+        logex:associatedLogSourceType  lid:SourceType_auth ;
+        logex:example                  "pam_unix(dovecot:auth): authentication failure; logname= uid=0 euid=0 tty=dovecot ruser=giovanni rhost=127.0.0.1  user=giovanni" ;
+        logex:hasAnnotation            cee:status_failure , cee:service_auth ;
+        logex:hasParameterList         ( "unknown" "unknown" "unknown" "unknown" "user" "ip" "user" ) ;
+        logex:keyword                  "pam" , "authentication failure" , "dovecot" ;
+        logex:pattern                  "pam_unix(dovecot:<*>): authentication failure; logname= uid=<*> euid=<*> tty=<*> ruser=<*> rhost=<*> user=<*>" .
+
 lxid:LogEventTemplate_e962e6c3
         a                              logex:LogEventTemplate ;
         rdfs:label                     "e962e6c3" ;
@@ -29,13 +39,3 @@ lxid:LogEventTemplate_e962e6c3
         logex:hasParameterList         ( "unknown" "user" "unknown" ) ;
         logex:keyword                  "cron" , "session open" , "pam" , "user" ;
         logex:pattern                  "pam_unix(cron:<*>): session opened for user <*> by (uid=<*>)" .
-
-lxid:LogEventTemplate_e4c34c7d
-        a                              logex:LogEventTemplate ;
-        rdfs:label                     "e4c34c7d" ;
-        logex:associatedLogSourceType  lid:SourceType_auth ;
-        logex:example                  "pam_unix(dovecot:auth): authentication failure; logname= uid=0 euid=0 tty=dovecot ruser=sunni rhost=127.0.0.1  user=sunni" ;
-        logex:hasAnnotation            cee:status_failure , cee:service_auth ;
-        logex:hasParameterList         ( "unknown" "unknown" "unknown" "unknown" "user" "unknown" "unknown" "user" ) ;
-        logex:keyword                  "pam" , "authentication failure" , "dovecot" ;
-        logex:pattern                  "pam_unix(dovecot:<*>): authentication failure; logname= uid=<*> euid=<*> tty=<*> ruser=<*> rhost=<*>.<*>.<*>.<*> user=<*>" .
