@@ -8,3 +8,4 @@ slogert.iml
 target/*
 notes/*
 output/output.ttl
+error.log

@@ -14,7 +14,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--intermediate", "-i", help="keeps all intermediate files", action="store_true")
     parser.add_argument("--all", "-a", help="run SLOGERT on all config files", action="store_true")
-    parser.add_argument("--files", "-f", nargs="+", help="paths to config files to run SLOGERT on")
+    parser.add_argument("--files", "-f", nargs="+", help="names of config files to run SLOGERT on")
     parser.add_argument("--update", "-u", help="rebuild SLOGERT with Maven to capture changes to config files", action="store_true")
     args = parser.parse_args()
 
