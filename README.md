@@ -4,15 +4,15 @@
 
 * [General Introduction](#general-introduction)
 * [Workflow](#workflow)
-  - [Initialization](#-initialization-)
-  - [A1 - Extraction Template Generation](#-a1---extraction-template-generation-)
-  - [A2 - Template Enrichment](#-a2---template-enrichment-)
+  - [Initialization](#initialization)
+  - [A1 - Extraction Template Generation](#a1---extraction-template-generation)
+  - [A2 - Template Enrichment](#a2---template-enrichment)
   - [A3 - RDFization](#a3---rdfization)
   - [KG Generation Algorithm](#kg-generation-algorithm)
-* [How to run](#how-to-run)
+* [Getting Started](#getting-started)
 * [SLOGERT configurations](#slogert-configurations)
 	+ [Main Configuration](#main-configuration)
-	+ [I/O Configuration](#i-o-configuration)
+	+ [I/O Configuration](#io-configuration)
 
 ## General Introduction 
 
@@ -115,30 +115,35 @@ SLOGERT pipeline can be described in several steps, which main parts are shown i
 
 For those that are interested, we also provided an explanation of the KG generation in a form of Algorithm as shown in the Figure 2 above.  
 
-## How to run
-Prerequisites for running SLOGERT
+## Getting Started
+### Prerequisites for running SLOGERT
+- Ubuntu or MAC OSX (other operating systems have not been tested)
+- [Java 11](https://www.oracle.com/java/technologies/javase/jdk11-archive-downloads.html) (for Lutra)
+- [Apache Maven](https://maven.apache.org/download.cgi)
+- [Python 3](https://www.python.org/downloads/)
 
-- `Java 11` (for Lutra)
-- `Apache Maven`
-- `Python 2` with `pandas` and `python-scipy` installed (for LogPai)
-    - the default setting is to use `python` command to invoke Python 2
-    - if this is not the case, modification on the `LogIntializer.java` is needed.
+### Setting up the project
+*  Compile this project (`mvn clean install` or `mvn clean install -DskipTests` if you want to skip the tests).
+*  Create a virtual environment for SLOGERT and activate it. With Anaconda/Miniconda, this can be done with `conda create --name slogert` and `conda activate slogert`.
+*  Navigate to the folder containing SLOGERT (`cd path/to/slogert`) and install the necessary Python packages (`pip install -r requirements.txt`).
+*  Each type of log file to be processed will need a configuration file associated with it (more details in [SLOGERT configurations](#slogert-configurations)).
+*  You can set properties for extraction in the config file (e.g., number of loglines produced per file). Examples of config and template files are available on the `src/test/resources` folder (e.g., `auth-config.yaml`for auth log data).
 
-We have tried and and tested SLOGERT on Mac OSX and Ubuntu with the following steps:
-
-*  Compile this project (`mvn clean install` or `mvn clean install -DskipTests` if you want to skip the tests)
-*  You can set properties for extraction in the config file (e.g., number of loglines produced per file). Examples of config and template files are available on the `src/test/resources` folder (e.g., `auth-config.yaml`for auth log data). 
-*  Transform the CSVs into OTTR format using the config file. By default, the following script should work on the example file. (```java -jar target/slogert-<SLOGERT-VERSION>-jar-with-dependencies.jar -c src/test/resources/auth-config.yaml```)
-*  The result would be produced in the `output/` folder
+### Running SLOGERT
+*  Run `slogert.py`, which is found in the base directory of this project.
+*  `python slogert.py --intermediate --all` will run SLOGERT on all relevant configuration files (log files in the `input` folder that have associated configuration files in the `src/test/resources` folder) and will keep all intermediate files (the outputs from the initialization, LogPai, Ottr, and TTL steps).
+*  Alternatively, `python slogert.py -f logType1-config.yaml logType2-config.yaml` will run SLOGERT for the log files associated with `logType1-config.yaml` and `logType2-config.yaml`. Any number of config files can be listed. Note that these are the names of the config files and not full paths. `slogert.py` currently assumes these files to be located in `src/test/resources`.
+*  For more information about the usage of `slogert.py`, run `python slogert.py -h`.
+*  The result is produced in the `output/` folder. The output of each step for each type of log is stored in its own folder if the `--i` flag is set. Otherwise, the `output/` folder will only contain the `.ttl` file for all of the processed log files combined.
 
 
 ## SLOGERT configurations
 
-Slogert configuration is divided into two parts: main configuration `config.yaml` and the input parameter `config-io.yaml`
+Slogert configuration is divided into two parts: main configuration `config.yaml` and the input parameter `config-io.yaml`. Note that when a change to a configuration file is made, it is necessary to rebuild SLOGERT. This can be done easily by calling `python slogert.py --update`.
 
 ### Main Configuration
 
-There are several configuration that can be adapted in the main configuration file `src/main/resources/config.yaml`. We will briefly described the most important configuration options here.
+There are several configuration that can be adapted in the main configuration file `src/main/resources/config.yaml`. We will briefly describe the most important configuration options here.
 
 * **logFormats** to describe information that you want to extract from a log source. This is important due to the various existing logline formats and variants. Each logFormat contain references to the *ottrTemplate* to build the `RDF_generation_template` for RDFization step.
 * **nerParameters** to register patterns that will used by StanfordNLP for recognizing log template parameter types. 
