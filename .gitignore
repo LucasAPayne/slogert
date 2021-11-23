@@ -7,5 +7,5 @@ slogert.iml
 .input-oldish/*
 target/*
 notes/*
-output/output.ttl
+output/*
 error.log
