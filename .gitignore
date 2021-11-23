@@ -9,3 +9,5 @@ target/*
 notes/*
 output/*
 error.log
+input/Device1/*
+src/test/resources/conn-config.yaml

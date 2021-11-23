@@ -41,7 +41,7 @@ def main():
 
     combine_KGs(out_path)
 
-    if not args.all:
+    if not args.intermediate:
         remove_intermediates(out_path)
 
     # Move output file to output directory

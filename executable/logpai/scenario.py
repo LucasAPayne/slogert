@@ -28,10 +28,10 @@ regex      = [
 st         = 0.5  # Similarity threshold
 depth      = 4  # Depth of all leaf nodes
 
-input_dir  = 'output/user/1-init' # The input directory of log file
-output_dir = 'output/user/2-logpai' # The output directory of parsing results
-log_file   = 'user.log.4' # The input log file name
-log_format = '<Device> <Month> <Date> <Time> <Type> <Component>: <Content>' # Syslog log format
+input_dir  = 'output/conn.log/1-init' # The input directory of log file
+output_dir = 'output/conn.log/2-logpai' # The output directory of parsing results
+log_file   = 'conn.log.0' # The input log file name
+log_format = '<Device> <Month> <Date> <Time> <Type> <Component> <Content>' # Syslog log format
 
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
