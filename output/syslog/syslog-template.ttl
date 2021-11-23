@@ -153,16 +153,6 @@ lxid:LogEventTemplate_6ad000fd
         logex:keyword                  "process" , "update" , "clamav" , "start" , "wed mar" ;
         logex:pattern                  "Wed Mar <*> <*>:<*>:<*> <*> -> ClamAV update process started at Wed Mar <*> <*>:<*>:<*> <*>" .
 
-lxid:LogEventTemplate_be95a278
-        a                              logex:LogEventTemplate ;
-        rdfs:label                     "be95a278" ;
-        logex:associatedLogSourceType  lid:SourceType_syslog ;
-        logex:example                  "[389899.065976] audit: type=1302 audit(1583303273.886:16954438): item=0 name=\"/lib/systemd/tls/x86_64/libsystemd-shared-232.so\" nametype=UNKNOWN" ;
-        logex:hasAnnotation            cee:service_audit , cee:action_audit ;
-        logex:hasParameterList         ( "unknown" "unknown" "unknown" "unknown" "unknown" "path" "unknown" ) ;
-        logex:keyword                  "audit" ;
-        logex:pattern                  "[<*>.<*>] audit: type=<*> audit(<*>.<*>:<*>): item=<*> name=\"/<*>\" nametype=<*>" .
-
 lxid:LogEventTemplate_2dbdc7da
         a                              logex:LogEventTemplate ;
         rdfs:label                     "2dbdc7da" ;
@@ -172,6 +162,16 @@ lxid:LogEventTemplate_2dbdc7da
         logex:hasParameterList         ( "unknown" "unknown" "user" "unknown" "ip" "ip" "path" ) ;
         logex:keyword                  "attempt" , "disconnect" , "auth fail" , "secure" , "sec" , "imap-login" ;
         logex:pattern                  "imap-login: Disconnected (auth failed, <*> attempts in <*> secs): user=<<*>>, method=<*>, rip=<*>, lip=<*>, secured, session=<<*>>" .
+
+lxid:LogEventTemplate_be95a278
+        a                              logex:LogEventTemplate ;
+        rdfs:label                     "be95a278" ;
+        logex:associatedLogSourceType  lid:SourceType_syslog ;
+        logex:example                  "[389899.065976] audit: type=1302 audit(1583303273.886:16954438): item=0 name=\"/lib/systemd/tls/x86_64/libsystemd-shared-232.so\" nametype=UNKNOWN" ;
+        logex:hasAnnotation            cee:service_audit , cee:action_audit ;
+        logex:hasParameterList         ( "unknown" "unknown" "unknown" "unknown" "unknown" "path" "unknown" ) ;
+        logex:keyword                  "audit" ;
+        logex:pattern                  "[<*>.<*>] audit: type=<*> audit(<*>.<*>:<*>): item=<*> name=\"/<*>\" nametype=<*>" .
 
 lxid:LogEventTemplate_2422872b
         a                              logex:LogEventTemplate ;
@@ -385,6 +385,15 @@ lxid:LogEventTemplate_18443d22
         logex:keyword                  "min" , "random time" , "timer" , "apt-daily-upgrade" , "add" ;
         logex:pattern                  "apt-daily-upgrade.timer: Adding 31min <*> random time." .
 
+lxid:LogEventTemplate_b7846b4e
+        a                              logex:LogEventTemplate ;
+        rdfs:label                     "b7846b4e" ;
+        logex:associatedLogSourceType  lid:SourceType_syslog ;
+        logex:example                  "Wed Mar  4 00:30:13 2020 -> Received signal: wake up" ;
+        logex:hasParameterList         ( "unknown" "unknown" "unknown" "unknown" "unknown" ) ;
+        logex:keyword                  "wake" , "receive signal" , "wed mar" ;
+        logex:pattern                  "Wed Mar <*> <*>:<*>:<*> <*> -> Received signal: wake up" .
+
 lxid:LogEventTemplate_19d70957
         a                              logex:LogEventTemplate ;
         rdfs:label                     "19d70957" ;
@@ -394,15 +403,6 @@ lxid:LogEventTemplate_19d70957
         logex:hasParameterList         ( "user" "unknown" "ip" "ip" "unknown" "unknown" ) ;
         logex:keyword                  "imap-login" , "login" , "secure" ;
         logex:pattern                  "imap-login: Login: user=<<*>>, method=<*>, rip=<*>, lip=<*>, mpid=<*>, secured, <*>" .
-
-lxid:LogEventTemplate_b7846b4e
-        a                              logex:LogEventTemplate ;
-        rdfs:label                     "b7846b4e" ;
-        logex:associatedLogSourceType  lid:SourceType_syslog ;
-        logex:example                  "Wed Mar  4 00:30:13 2020 -> Received signal: wake up" ;
-        logex:hasParameterList         ( "unknown" "unknown" "unknown" "unknown" "unknown" ) ;
-        logex:keyword                  "wake" , "receive signal" , "wed mar" ;
-        logex:pattern                  "Wed Mar <*> <*>:<*>:<*> <*> -> Received signal: wake up" .
 
 lxid:LogEventTemplate_f49657b2
         a                              logex:LogEventTemplate ;
@@ -779,6 +779,15 @@ lxid:LogEventTemplate_6385bb71
         logex:keyword                  "line" , "pid" , "message send" ;
         logex:pattern                  "[<*>] Message sent to <*> <*>, <*> <*> from <*> (<*>) [pid <*> on line <*> of \"/<*>\"]" .
 
+lxid:LogEventTemplate_2fc5a013
+        a                              logex:LogEventTemplate ;
+        rdfs:label                     "2fc5a013" ;
+        logex:associatedLogSourceType  lid:SourceType_syslog ;
+        logex:example                  "[horde] User clay logged out of Horde (192.168.10.130) [pid 5662 on line 106 of \"/var/www/mail.spiral.com/login.php\"]" ;
+        logex:hasParameterList         ( "unknown" "user" "ip" "unknown" "unknown" "filePath" ) ;
+        logex:keyword                  "log" , "horde" , "line" , "pid" , "user" ;
+        logex:pattern                  "[<*>] User <*> logged out of Horde (<*>) [pid <*> on line <*> of \"/<*>\"]" .
+
 lxid:LogEventTemplate_bc851626
         a                              logex:LogEventTemplate ;
         rdfs:label                     "bc851626" ;
@@ -788,15 +797,6 @@ lxid:LogEventTemplate_bc851626
         logex:hasParameterList         () ;
         logex:keyword                  "stopped" , "service" , "security" , "auditing" ;
         logex:pattern                  "Stopped Security Auditing Service." .
-
-lxid:LogEventTemplate_2fc5a013
-        a                              logex:LogEventTemplate ;
-        rdfs:label                     "2fc5a013" ;
-        logex:associatedLogSourceType  lid:SourceType_syslog ;
-        logex:example                  "[horde] User clay logged out of Horde (192.168.10.130) [pid 5662 on line 106 of \"/var/www/mail.spiral.com/login.php\"]" ;
-        logex:hasParameterList         ( "unknown" "user" "ip" "unknown" "unknown" "filePath" ) ;
-        logex:keyword                  "log" , "horde" , "line" , "pid" , "user" ;
-        logex:pattern                  "[<*>] User <*> logged out of Horde (<*>) [pid <*> on line <*> of \"/<*>\"]" .
 
 lxid:LogEventTemplate_d0f6fa37
         a                              logex:LogEventTemplate ;
