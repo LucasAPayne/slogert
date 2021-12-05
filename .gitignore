@@ -1,3 +1,5 @@
+__pycache__/
+*.py[cod]
 slogert.iml
 .idea/*
 .internal/*
@@ -5,3 +7,6 @@ slogert.iml
 .input-oldish/*
 target/*
 notes/*
+output/*
+error.log
+input/Device1/*
