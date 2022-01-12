@@ -11,6 +11,8 @@ import time
 import yaml
 from pathlib import Path
 
+import util.gen_ids as gen_ids
+
 def main():
     # Define CLI arguments
     parser = argparse.ArgumentParser()
@@ -49,6 +51,9 @@ def main():
         shutil.move("output.ttl", os.path.join(out_path, "output.ttl"))
 
     print("****** End of KG aggregation")
+
+    print(os.path.join(out_path, "output.ttl"))
+    gen_ids.gen_ids(os.path.join(out_path, "output.ttl"), out_path, labels=False)
 
 
 """
