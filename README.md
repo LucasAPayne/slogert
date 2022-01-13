@@ -10,6 +10,10 @@
   - [A3 - RDFization](#a3---rdfization)
   - [KG Generation Algorithm](#kg-generation-algorithm)
 * [Getting Started](#getting-started)
+  - [Prerequisites for Running SLOGERT](#prerequisites-for-running-slogert)
+  - [Setting up the Project](#setting-up-the-project)
+  - [Running SLOGERT](#running-slogert)
+  - [Additional Commands](#additional-commands)
 * [SLOGERT configurations](#slogert-configurations)
 	+ [Main Configuration](#main-configuration)
 	+ [I/O Configuration](#io-configuration)
@@ -122,20 +126,28 @@ For those that are interested, we also provided an explanation of the KG generat
 - [Apache Maven](https://maven.apache.org/download.cgi)
 - [Python 3](https://www.python.org/downloads/)
 
-### Setting up the project
-*  Compile this project (`mvn clean install` or `mvn clean install -DskipTests` if you want to skip the tests).
-*  Create a virtual environment for SLOGERT and activate it. With Anaconda/Miniconda, this can be done with `conda create --name slogert` and `conda activate slogert`.
-*  Navigate to the folder containing SLOGERT (`cd path/to/slogert`) and install the necessary Python packages (`pip install -r requirements.txt`).
-*  Each type of log file to be processed will need a configuration file associated with it (more details in [SLOGERT configurations](#slogert-configurations)).
-*  You can set properties for extraction in the config file (e.g., number of loglines produced per file). Examples of config and template files are available on the `src/test/resources` folder (e.g., `auth-config.yaml`for auth log data).
+### Setting up the Project
+-  Compile this project (`mvn clean install` or `mvn clean install -DskipTests` if you want to skip the tests).
+-  Create a virtual environment for SLOGERT and activate it. With Anaconda/Miniconda, this can be done with `conda create --name slogert` and `conda activate slogert`.
+-  Navigate to the folder containing SLOGERT (`cd path/to/slogert`) and install the necessary Python packages (`pip install -r requirements.txt`).
+-  Each type of log file to be processed will need a configuration file associated with it (more details in [SLOGERT configurations](#slogert-configurations)).
+-  You can set properties for extraction in the config file (e.g., number of loglines produced per file). Examples of config and template files are available on the `src/test/resources` folder (e.g., `auth-config.yaml`for auth log data).
 
 ### Running SLOGERT
-*  Run `slogert.py`, which is found in the base directory of this project.
-*  `python slogert.py --intermediate --all` will run SLOGERT on all relevant configuration files (log files in the `input` folder that have associated configuration files in the `src/test/resources` folder) and will keep all intermediate files (the outputs from the initialization, LogPai, Ottr, and TTL steps).
-*  Alternatively, `python slogert.py -f logType1-config.yaml logType2-config.yaml` will run SLOGERT for the log files associated with `logType1-config.yaml` and `logType2-config.yaml`. Any number of config files can be listed. Note that these are the names of the config files and not full paths. `slogert.py` currently assumes these files to be located in `src/test/resources`.
-*  For more information about the usage of `slogert.py`, run `python slogert.py -h`.
-*  The result is produced in the `output/` folder. The output of each step for each type of log is stored in its own folder if the `--i` flag is set. Otherwise, the `output/` folder will only contain the `.ttl` file for all of the processed log files combined.
+`slogert.py` is the main script providing for simpler use of SLOGERT, and its CLI comes with several arguments. For a full list of commands and their descriptions, run `python slogert.py -h`, `python slogert.py gen-kg -h`, and `python slogert.py gen-ids -h`. The primary commands for knowledge graph generation are listed below.
+-  `python slogert.py gen-kg -a -n name.ttl` will run SLOGERT on all relevant configuration files (log files in the `input` folder that have associated configuration files in the `src/test/resources` folder). Each `.ttl` file produced will be combined into a single file called `name.ttl`.
+-  Alternatively, `python slogert.py gen-kg -f logType1-config.yaml logType2-config.yaml` will run SLOGERT for the log files associated with `logType1-config.yaml` and `logType2-config.yaml`.
+    - Any number of config files can be listed. Note that these are the names of the config files and not full paths. `slogert.py` currently assumes these files to be located in `src/test/resources`, although this may be configurable in the future.
+- The result is produced in the `data/name` folder, where the name is provided with the `-n` argument when generating the knowledge graph. 
+  - This organization allows, for example, training and testing datasets to remain separate. 
+- The output of each step for each type of log is stored in its own folder in the `output/` directory if the `-i` flag is set.
 
+### Additional Commands
+The knowledge graph data stored as `.ttl` files can be compressed by assigning each entity and relation an ID, and recreating the KG with the IDs in a `.del` file. Note that all KGs should be processed with the steps from the previous section before performing these steps. Additionally, labels should be appended to triples in the `.ttl` KGs manually or using an outside tool, if desired. This conversion can be accomplished with the following commands.
+- `python slogert.py gen-ids -n name.ttl` will generate IDs for all `.ttl` KGs in the `data/` directory and recreate the KG as `name.del` using those IDs. The ID mappings will be stored as `entity_ids.del` and `relation_ids.del`.
+  - Note that if the IDs have already been generated, they will be loaded from the files containing the mappings.
+  - This approach again allows training and testing datasets to remain separate while using the same pool of IDs.
+- Adding the `-l` flag, as in `python slogert.py gen-ids -n name.ttl -l` indicates that `name.ttl` contains labelled triples (e.g., suspicion rankings). This is necessary for correct parsing and recontructing the KG with labels preserved.
 
 ## SLOGERT configurations
 
