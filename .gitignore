@@ -8,6 +8,7 @@ slogert.iml
 target/*
 notes/*
 output/*
+data/*
 error.log
 input/Device1/*
 src/test/resources/conn-config.yaml
