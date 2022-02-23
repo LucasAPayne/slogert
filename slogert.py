@@ -18,10 +18,10 @@ def main():
     subparsers = parser.add_subparsers()
     # Arguments for generating KG
     gen_kg_parser = subparsers.add_parser("gen-kg", help="generate one knowledge graph from a set of SLOGERT config files")
-    gen_kg_parser.add_argument("--intermediate", "-i", help="keeps all intermediate files", action="store_true")
+    gen_kg_parser.add_argument("--save-temps", "-s", help="saves all temporary files to the output/ directory", action="store_true")
     gen_kg_parser.add_argument("--all", "-a", help="run SLOGERT on all config files", action="store_true")
     gen_kg_parser.add_argument("--files", "-f", nargs="+", help="names of config files to run SLOGERT on")
-    gen_kg_parser.add_argument("--name", "-n", help="the name of the target output .ttl file")
+    gen_kg_parser.add_argument("--outfile", "-o", help="path to output the .ttl file")
     gen_kg_parser.set_defaults(func=gen_kg.gen_kg)
 
     # Arguments for generating IDs
@@ -29,7 +29,7 @@ def main():
     # gen_ids_parser.add_argument("--gen-ids", 
     #                     help="convert entities and relations from a generated knowledge graph (.ttl file) to IDs and reconstruct the knowldge graph using those IDs", action="store_true")
     gen_ids_parser.add_argument("--labels", "-l", help="indicates that the .ttl file contains a label after each triple", action="store_true")
-    gen_ids_parser.add_argument("--name", "-n", required=True, help="name of .ttl file for which to generate IDs")
+    gen_ids_parser.add_argument("--infile", "-i", required=True, help="path to the .ttl file for which to generate IDs")
     gen_ids_parser.set_defaults(func=gen_ids.gen_ids)
 
     args = parser.parse_args()

@@ -26,8 +26,8 @@ def gen_ids(args):
     rel_ids = {}
     lines = []
 
-    in_path = Path("data/")
-    out_path = Path("data/{0}/".format(args.name.split('.')[0]))
+    ttl_name = args.infile[args.infile.rfind('/')+1:]
+    in_path = Path(args.infile[:args.infile.rfind('/')]) 
     ids_exist = False
     id_location = ""
 
@@ -43,7 +43,7 @@ def gen_ids(args):
         # Gather IDs from existing files
         ent_ids = load_ids(os.path.join(id_location, "entity_ids.del"), ent_ids)
         rel_ids = load_ids(os.path.join(id_location, "relation_ids.del"), rel_ids)
-        lines = load_content(os.path.join(out_path, args.name))
+        lines = load_content(os.path.join(in_path, ttl_name))
     else:
         path_list = in_path.glob("**/*.ttl")
         for file in path_list:
@@ -77,14 +77,14 @@ def gen_ids(args):
 
         end = time.time()
         print("*** IDs generated in {:.2f}s".format(end - start))
-        save_ids(os.path.join(out_path, "entity_ids.del"), ent_ids)
-        save_ids(os.path.join(out_path, "relation_ids.del"), rel_ids)
+        save_ids(os.path.join(in_path, "entity_ids.del"), ent_ids)
+        save_ids(os.path.join(in_path, "relation_ids.del"), rel_ids)
 
     print("****** End of ID generation")
 
     # If the data is labelled, it must be test data. 
     # Data with no labels must be training data, since it is implicitly labelled as observed
-    save_data(os.path.join(out_path, "{0}.del".format(args.name.split('.')[0])), lines, ent_ids, rel_ids, labels=args.labels)
+    save_data(os.path.join(in_path, "{0}.del".format(ttl_name.split('.')[0])), lines, ent_ids, rel_ids, labels=args.labels)
 
 
 """

@@ -18,8 +18,13 @@ def gen_kg(args):
     in_path = Path("input/")
 
     # The name of the .ttl file used as output for generating a KG is the name given in the argument, or output.ttl if no name is given
-    ttl_name = args.name if args.name else "output.ttl"
-    out_path = Path("data/{0}/".format(ttl_name.split('.')[0])) # Create folder for output named for ttl_name (e.g., train.ttl creates folder train)
+    # The file name is the text left over after the last '/'
+    ttl_name = args.outfile.split('/')[-1] if args.outfile else "output.ttl" 
+
+    # Create folder for output named for ttl file (e.g., data/train.ttl creates folder data/train)
+    # The directory path is the outpath until the last '/'
+    out_path = Path(args.outfile[:args.outfile.rfind('/')]) 
+
     # Create output directory if it does not exist
     if not os.path.exists(out_path):
         os.makedirs(out_path)
@@ -34,7 +39,7 @@ def gen_kg(args):
 
     combine_KGs(out_path, ttl_name)
 
-    if not args.intermediate:
+    if not args.save_temps:
         shutil.rmtree(Path("output/"))
 
     # Move output file to output directory
@@ -107,7 +112,7 @@ def combine_KGs(out_path, ttl_name):
     # Note that SLOGERT puts intermediate files in the output directory, not the out_path created in this script
     output_files = [f for f in Path("output/").glob('**/*') if f.is_file() and f.name.endswith(".ttl") and not f.name.endswith("template.ttl") and not f.name == ttl_name]
     with open(os.path.join(out_path, ttl_name), "w", encoding="utf-8") as outfile:
-        print("*** Combining .ttl files . . .")
+        print("*** Combining .ttl files...")
         start = time.time()
         
         # Loop through .ttl files, exlcuding .ttl.log files
