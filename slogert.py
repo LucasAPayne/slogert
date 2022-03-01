@@ -26,8 +26,6 @@ def main():
 
     # Arguments for generating IDs
     gen_ids_parser = subparsers.add_parser("gen-ids", help="convert entities and relations from a generated knowledge graph (.ttl file) to IDs and reconstruct the knowldge graph using those IDs")
-    # gen_ids_parser.add_argument("--gen-ids", 
-    #                     help="convert entities and relations from a generated knowledge graph (.ttl file) to IDs and reconstruct the knowldge graph using those IDs", action="store_true")
     gen_ids_parser.add_argument("--labels", "-l", help="indicates that the .ttl file contains a label after each triple", action="store_true")
     gen_ids_parser.add_argument("--infile", "-i", required=True, help="path to the .ttl file for which to generate IDs")
     gen_ids_parser.set_defaults(func=gen_ids.gen_ids)
@@ -36,9 +34,11 @@ def main():
 
     # If updating SLOGERT, only update, then return
     # Rebuild with Maven, and skip tests, used mainly for capturing changes to config files
-    if args.update:
+    # If the target/ directory (which contains the SLOGERT executable) does not exist, also build with Maven but do not return
+    if args.update or not os.path.exists("target/"):
         os.system("mvn install -DskipTests")
-        return
+        if args.update:
+            return
 
     # Call the appropriate function based on the args given
     args.func(args)

@@ -23,7 +23,7 @@ def gen_kg(args):
 
     # Create folder for output named for ttl file (e.g., data/train.ttl creates folder data/train)
     # The directory path is the outpath until the last '/'
-    out_path = Path(args.outfile[:args.outfile.rfind('/')]) 
+    out_path = Path(args.outfile[:args.outfile.rfind('/')]) if args.outfile else '.'
 
     # Create output directory if it does not exist
     if not os.path.exists(out_path):

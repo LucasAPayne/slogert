@@ -127,7 +127,7 @@ For those that are interested, we also provided an explanation of the KG generat
 - [Python 3](https://www.python.org/downloads/)
 
 ### Setting up the Project
--  Compile this project (`mvn clean install` or `mvn clean install -DskipTests` if you want to skip the tests).
+-  If desired, compile and test this project with `mvn clean install`. However, calling the `slogert.py` script with a missing executable will also compile the project, but without running tests.
 -  Create a virtual environment for SLOGERT and activate it. With Anaconda/Miniconda, this can be done with `conda create --name slogert` and `conda activate slogert`.
 -  Navigate to the folder containing SLOGERT (`cd path/to/slogert`) and install the necessary Python packages (`pip install -r requirements.txt`).
 -  Each type of log file to be processed will need a configuration file associated with it (more details in [SLOGERT configurations](#slogert-configurations)).

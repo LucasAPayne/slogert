@@ -20,7 +20,7 @@ Regenerate the triples using the IDs.
 args: command line arguments defined in slogert.py
 """
 def gen_ids(args):
-    print("*** Generating IDs . . .")
+    print("*** Generating IDs...")
     start = time.time()
     ent_ids = {}
     rel_ids = {}
@@ -97,7 +97,7 @@ rel_dict: dictionary containing mapping of relations to IDs
 labels: true if the data is labeled (testing data), false otherwise (training data)
 """
 def save_data(path, lines, ent_dict, rel_dict, labels=False):
-    print("*** Reconstructing KG using IDs . . .")
+    print("*** Reconstructing KG using IDs...")
     start = time.time()
     # Go back through .ttl file, keeping track of the current subject and relation
     # For every object entity in that line, make a new triple
