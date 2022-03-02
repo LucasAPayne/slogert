@@ -46,10 +46,10 @@ def gen_ids(args):
         lines = load_content(os.path.join(in_path, ttl_name))
     else:
         path_list = in_path.glob("**/*.ttl")
+        ent_count = 0
+        rel_count = 0
         for file in path_list:
             lines = load_content(file)
-            ent_count = 0
-            rel_count = 0
 
             # Go through each list (line)
             # output.ttl expected to look like
@@ -70,8 +70,8 @@ def gen_ids(args):
 
                     # If data is labeled, last item will be label, so discard
                     num_args = len(lines[i]) - 1 if args.labels else len(lines[i])
-                    for j in range(num_args):
-                        if lines[i][j] not in ent_ids and j > 0:
+                    for j in range(1, num_args):
+                        if lines[i][j] not in ent_ids:
                             ent_ids[lines[i][j]] = ent_count
                             ent_count += 1
 

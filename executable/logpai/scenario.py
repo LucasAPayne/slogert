@@ -28,9 +28,9 @@ regex      = [
 st         = 0.5  # Similarity threshold
 depth      = 4  # Depth of all leaf nodes
 
-input_dir  = 'output/auth.log/1-init' # The input directory of log file
-output_dir = 'output/auth.log/2-logpai' # The output directory of parsing results
-log_file   = 'auth.log.0' # The input log file name
+input_dir  = 'output/daemon.log/1-init' # The input directory of log file
+output_dir = 'output/daemon.log/2-logpai' # The output directory of parsing results
+log_file   = 'daemon.log.0' # The input log file name
 log_format = '<Device> <Month> <Date> <Time> <Type> <Component>: <Content>' # Syslog log format
 
 if not os.path.exists(output_dir):
