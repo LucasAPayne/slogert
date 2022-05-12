@@ -132,6 +132,7 @@ For those that are interested, we also provided an explanation of the KG generat
 -  Navigate to the folder containing SLOGERT (`cd path/to/slogert`) and install the necessary Python packages (`pip3 install -r requirements.txt`).
 -  Each type of log file to be processed will need a configuration file associated with it (more details in [SLOGERT configurations](#slogert-configurations)).
 -  You can set properties for extraction in the config file (e.g., number of loglines produced per file). Examples of config and template files are available on the `src/test/resources` folder (e.g., `auth-config.yaml`for auth log data).
+- Example log files can be found in `src/test/input`. To use them, simply copy the directories found there to the `input` folder in the root directory of this repo.
 
 ### Running SLOGERT
 `slogert.py` is the main script providing for simpler use of SLOGERT, and its CLI comes with several arguments. For a full list of commands and their descriptions, run `python slogert.py -h`, `python slogert.py gen-kg -h`, and `python slogert.py gen-ids -h`. The primary commands for knowledge graph generation are listed below.
