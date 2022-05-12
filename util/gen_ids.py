@@ -94,27 +94,44 @@ path: path to save training data to (should be .del file)
 lines: original lines of training data with extra whitespace and symbols removed
 ent_dict: dictionary containing mappings of entities to IDs
 rel_dict: dictionary containing mapping of relations to IDs
-labels: true if the data is labeled (testing data), false otherwise (training data)
+labels: true if the data is labeled (testing/validation data), false otherwise (training data)
 """
 def save_data(path, lines, ent_dict, rel_dict, labels=False):
+    def save_with_labels():
+        label_path = os.path.splitext(path)[0] + "_labels.txt"
+        # Go back through .ttl file, keeping track of the current subject and relation
+        # For every object entity in that line, make a new triple
+        with open(path, "w") as data_file, open(label_path, "w") as label_file:
+            for i in range(len(lines)):
+                if len(lines[i]) == 1:
+                    current_sub = ent_dict[lines[i][0]]
+                    continue
+
+                num_args = len(lines[i]) - 1
+                for j in range(1, num_args):
+                    current_rel = rel_dict[lines[i][0]]
+                    data_file.write(str(current_sub) + "\t" + str(current_rel) + "\t" + str(ent_dict[lines[i][j]]) + "\n")
+                    label_file.write(str(lines[i][-1]) + "\n")
+    
+    def save_no_labels():
+        with open(path, "w") as data_file:
+            for i in range(len(lines)):
+                if len(lines[i]) == 1:
+                    current_sub = ent_dict[lines[i][0]]
+                    continue
+
+                num_args = len(lines[i])
+                for j in range(1, num_args):
+                    current_rel = rel_dict[lines[i][0]]
+                    data_file.write(str(current_sub) + "\t" + str(current_rel) + "\t" + str(ent_dict[lines[i][j]]) + "\n")
+
     print("*** Reconstructing KG using IDs...")
     start = time.time()
-    # Go back through .ttl file, keeping track of the current subject and relation
-    # For every object entity in that line, make a new triple
-    with open(path, "w") as f:
-        for i in range(len(lines)):
-            if len(lines[i]) == 1:
-                current_sub = ent_dict[lines[i][0]]
-                continue
 
-            num_args = len(lines[i]) if not labels else len(lines[i]) - 1
-            for j in range(num_args):
-                current_rel = rel_dict[lines[i][0]]
-                if j > 0:
-                    if labels:
-                        f.write(str(current_sub) + "\t" + str(current_rel) + "\t" + str(ent_dict[lines[i][j]]) + "\t" + str(lines[i][-1]) + "\n")
-                    else:
-                        f.write(str(current_sub) + "\t" + str(current_rel) + "\t" + str(ent_dict[lines[i][j]]) + "\n")
+    if labels:
+        save_with_labels()
+    else:
+        save_no_labels()
     
     end = time.time()
     print("*** KG reconstructed in {:.2f}s".format(end - start))
