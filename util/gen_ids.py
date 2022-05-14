@@ -32,7 +32,7 @@ def gen_ids(args):
     id_location = ""
 
     for root, dirs, files in os.walk(str(in_path)):
-        if "entity_ids.del" in files and "relation_ids.del" in files:
+        if "entity_ids.txt" in files and "relation_ids.txt" in files:
             ids_exist = True
             id_location = root
 
@@ -41,8 +41,8 @@ def gen_ids(args):
     if ids_exist:
         print("IDs already generated")
         # Gather IDs from existing files
-        ent_ids = load_ids(os.path.join(id_location, "entity_ids.del"), ent_ids)
-        rel_ids = load_ids(os.path.join(id_location, "relation_ids.del"), rel_ids)
+        ent_ids = load_ids(os.path.join(id_location, "entity_ids.txt"), ent_ids)
+        rel_ids = load_ids(os.path.join(id_location, "relation_ids.txt"), rel_ids)
         lines = load_content(os.path.join(in_path, ttl_name))
     else:
         path_list = in_path.glob("**/*.ttl")
@@ -77,21 +77,21 @@ def gen_ids(args):
 
         end = time.time()
         print("*** IDs generated in {:.2f}s".format(end - start))
-        save_ids(os.path.join(in_path, "entity_ids.del"), ent_ids)
-        save_ids(os.path.join(in_path, "relation_ids.del"), rel_ids)
+        save_ids(os.path.join(in_path, "entity_ids.txt"), ent_ids)
+        save_ids(os.path.join(in_path, "relation_ids.txt"), rel_ids)
 
     print("****** End of ID generation")
 
     # If the data is labelled, it must be test data. 
     # Data with no labels must be training data, since it is implicitly labelled as observed
-    save_data(os.path.join(in_path, "{0}.del".format(ttl_name.split('.')[0])), lines, ent_ids, rel_ids, labels=args.labels)
+    save_data(os.path.join(in_path, "{0}.txt".format(ttl_name.split('.')[0])), lines, ent_ids, rel_ids, labels=args.labels)
 
 
 """
 Recreate training/testing data using entity and relation IDs
 Output file will be in triple form (e.g., 0 0 1)
-path: path to save training data to (should be .del file)
-lines: original lines of training data with extra whitespace and symbols removed
+path: path to save dataset to 
+lines: original lines of dataset with extra whitespace and symbols removed
 ent_dict: dictionary containing mappings of entities to IDs
 rel_dict: dictionary containing mapping of relations to IDs
 labels: true if the data is labeled (testing/validation data), false otherwise (training data)
