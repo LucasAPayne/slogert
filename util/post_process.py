@@ -36,7 +36,7 @@ def post_process(args):
 
         # If the data is labeled, it must be test data. 
         # Data with no labels must be training data, since it is implicitly labeled as observed
-        save_data(args, path, lines, ent_ids, rel_ids)
+        save_data(args, path, lines)
     
     end = time.time()
     print("*** Post-processing completed in {:2f}s".format(end - start))
