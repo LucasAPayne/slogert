@@ -8,7 +8,7 @@ Additionally provides an alias command for rebuilding SLOGERT without running te
 import argparse
 import os
 
-import util.gen_ids as gen_ids
+import util.post_process as post_process
 import util.gen_kg as gen_kg
 
 def main():
@@ -25,10 +25,13 @@ def main():
     gen_kg_parser.set_defaults(func=gen_kg.gen_kg)
 
     # Arguments for generating IDs
-    gen_ids_parser = subparsers.add_parser("gen-ids", help="convert entities and relations from a generated knowledge graph (.ttl file) to IDs and reconstruct the knowldge graph using those IDs")
-    gen_ids_parser.add_argument("--labels", "-l", help="indicates that the .ttl file contains a label after each triple", action="store_true")
-    gen_ids_parser.add_argument("--infile", "-i", required=True, help="path to the .ttl file for which to generate IDs")
-    gen_ids_parser.set_defaults(func=gen_ids.gen_ids)
+    post_process_parser = subparsers.add_parser("post-process", help="Format a generated knowledge graph (.ttl file) to have a triple on each line")
+    
+    # gen_ids_parser = subparsers.add_parser("gen-ids", help="convert entities and relations from a generated knowledge graph (.ttl file) to IDs and reconstruct the knowldge graph using those IDs")
+    post_process_parser.add_argument("--labels", "-l", help="indicates that the .ttl file contains a label after each triple", action="store_true")
+    post_process_parser.add_argument("--gen-ids", "-g", help="convert entities and relations from a generated knowledge graph (.ttl file) to IDs and reconstruct the knowldge graph using those IDs", action="store_true")
+    post_process_parser.add_argument("--infile", "-i", required=True, help="path to the .ttl file to process")
+    post_process_parser.set_defaults(func=post_process.post_process)
 
     args = parser.parse_args()
 

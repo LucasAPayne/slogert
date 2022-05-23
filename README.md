@@ -135,7 +135,7 @@ For those that are interested, we also provided an explanation of the KG generat
 - Example log files can be found in `src/test/input`. To use them, simply copy the directories found there to the `input` folder in the root directory of this repo.
 
 ### Running SLOGERT
-`slogert.py` is the main script providing for simpler use of SLOGERT, and its CLI comes with several arguments. For a full list of commands and their descriptions, run `python slogert.py -h`, `python slogert.py gen-kg -h`, and `python slogert.py gen-ids -h`. The primary commands for knowledge graph generation are listed below.
+`slogert.py` is the main script providing for simpler use of SLOGERT, and its CLI comes with several arguments. For a full list of commands and their descriptions, run `python slogert.py -h`, `python slogert.py gen-kg -h`, and `python slogert.py post-process -h`. The primary commands for knowledge graph generation are listed below.
 -  `python slogert.py gen-kg -a -o path/to/outfile.ttl` will run SLOGERT on all relevant configuration files (log files in the `input` folder that have associated configuration files in the `src/test/resources` folder). Each `.ttl` file produced will be combined into a single file called `outfile.ttl`.
 -  Alternatively, `python slogert.py gen-kg -f logType1-config.yaml logType2-config.yaml` will run SLOGERT for the log files associated with `logType1-config.yaml` and `logType2-config.yaml`.
     - Any number of config files can be listed. Note that these are the names of the config files and not full paths. `slogert.py` currently assumes these files to be located in `src/test/resources`, although this may be configurable in the future.
@@ -143,11 +143,12 @@ For those that are interested, we also provided an explanation of the KG generat
 - The output of each step for each type of log is stored in its own folder in the `output/` directory if the `--save-temps` or `-s` flag is set.
 
 ### Additional Commands
-The knowledge graph data stored as `.ttl` files can be compressed by assigning each entity and relation an ID, and recreating the KG with the IDs in a `.del` file. Note that all KGs should be processed with the steps from the previous section before performing these steps. Additionally, labels should be appended to triples in the `.ttl` KGs manually or using an outside tool, if desired. This conversion can be accomplished with the following commands.
-- `python slogert.py gen-ids -i path/to/infile.ttl` will generate IDs for all `.ttl` KGs in the `path/to/` directory and recreate the KG as `infile.del` using those IDs. The ID mappings will be stored as `entity_ids.del` and `relation_ids.del`.
-  - Note that if the IDs have already been generated, they will be loaded from the files containing the mappings.
-  - This approach allows separate KGs to use a common pool of IDs.
-- Adding the `-l` flag, as in `python slogert.py gen-ids -i path/to/infile.ttl -l` indicates that `infile.ttl` contains labelled triples (e.g., suspicion rankings). This is necessary for correct parsing and recontructing the KG with labels preserved.
+Post-processing commands for knowledge graphs are also available. KGs can be reformatted to have one triple per line. The knowledge graph data stored as `.ttl` files can be compressed by assigning each entity and relation an ID, and recreating the KG with the IDs in a `.txt` file. Note that all KGs should be processed with the steps from the previous section before performing these steps. Additionally, labels should be appended to triples in the `.ttl` KGs manually or using an outside tool, if desired. This conversion can be accomplished with the following commands.
+- `python slogert.py post-process -i path/to/infile.ttl` will perform post-processing on all `.ttl` KGs in the `path/to/` directory. This will format the KGs as having one triple per line.
+  - Optionally, the `-g` flag can be set, which generate IDs for all entities and relations in the directory and recreate the KG as `infile.txt` using those IDs. The ID mappings will be stored as `entity_ids.txt` and `relation_ids.txt`.
+    - Note that if the IDs have already been generated, they will be loaded from the files containing the mappings.
+    - This approach allows separate KGs to use a common pool of IDs and compresses the data in the KG.
+- Adding the `-l` flag, as in `python slogert.py post-process -i path/to/infile.ttl -l` indicates that `infile.ttl` contains labelled triples (e.g., suspicion rankings). This is necessary for correct parsing and recontructing the KG with labels preserved.
 
 ## SLOGERT configurations
 

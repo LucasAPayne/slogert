@@ -1,12 +1,12 @@
 """
-Contains functions for converting entities and relations in a knolwedge graph into IDs to compress the data
+Contains functions for post-processing a knowledge graph, optionally converting entities and relations into IDs to compress the data
 Note that these functions work specifically on a .ttl file with triples formatted as:
 subject
     relation    object [object . . .]   [label]
     relation    object [object . . .]   [label]
     . . .
 
-Note also that the knowledge graph can also be labelled, as in a testing dataset
+Note also that the knowledge graph can also be labeled, as in a testing dataset
 """
 
 import os
@@ -14,20 +14,45 @@ import shlex
 import time
 from pathlib import Path
 
+
+"""
+Perform post-processing on constructed KG
+The resulting KG will have one triple per line, optionally with entities and relations being assigned IDs
+"""
+def post_process(args):
+    start = time.time()
+    print("*** Begin post-processing...")
+
+    ttl_name = args.infile[args.infile.rfind('/')+1:]
+    in_path = Path(args.infile[:args.infile.rfind('/')]) 
+    path = os.path.join(in_path, "{0}.txt".format(ttl_name.split('.')[0]))
+
+    if args.gen_ids:
+        lines, ent_ids, rel_ids = gen_ids(args, in_path, ttl_name)
+        save_data(args, path, lines, ent_ids, rel_ids)
+
+    else:
+        lines = load_content(os.path.join(in_path, ttl_name))
+
+        # If the data is labeled, it must be test data. 
+        # Data with no labels must be training data, since it is implicitly labeled as observed
+        save_data(args, path, lines, ent_ids, rel_ids)
+    
+    end = time.time()
+    print("*** Post-processing completed in {:2f}s".format(end - start))
+    print("****** End of post-processing")
+
 """
 Assign IDs to each entity and relation in the KG.
 Regenerate the triples using the IDs.
 args: command line arguments defined in slogert.py
 """
-def gen_ids(args):
+def gen_ids(args, in_path, ttl_name):
     print("*** Generating IDs...")
     start = time.time()
     ent_ids = {}
     rel_ids = {}
-    lines = []
 
-    ttl_name = args.infile[args.infile.rfind('/')+1:]
-    in_path = Path(args.infile[:args.infile.rfind('/')]) 
     ids_exist = False
     id_location = ""
 
@@ -74,18 +99,13 @@ def gen_ids(args):
                         if lines[i][j] not in ent_ids:
                             ent_ids[lines[i][j]] = ent_count
                             ent_count += 1
-
+        
         end = time.time()
         print("*** IDs generated in {:.2f}s".format(end - start))
         save_ids(os.path.join(in_path, "entity_ids.txt"), ent_ids)
         save_ids(os.path.join(in_path, "relation_ids.txt"), rel_ids)
 
-    print("****** End of ID generation")
-
-    # If the data is labelled, it must be test data. 
-    # Data with no labels must be training data, since it is implicitly labelled as observed
-    save_data(os.path.join(in_path, "{0}.txt".format(ttl_name.split('.')[0])), lines, ent_ids, rel_ids, labels=args.labels)
-
+    return lines, ent_ids, rel_ids
 
 """
 Recreate training/testing data using entity and relation IDs
@@ -96,7 +116,7 @@ ent_dict: dictionary containing mappings of entities to IDs
 rel_dict: dictionary containing mapping of relations to IDs
 labels: true if the data is labeled (testing/validation data), false otherwise (training data)
 """
-def save_data(path, lines, ent_dict, rel_dict, labels=False):
+def save_data(args, path, lines, ent_dict=None, rel_dict=None):
     def save_with_labels():
         label_path = os.path.splitext(path)[0] + "_labels.txt"
         # Go back through .ttl file, keeping track of the current subject and relation
@@ -104,31 +124,33 @@ def save_data(path, lines, ent_dict, rel_dict, labels=False):
         with open(path, "w") as data_file, open(label_path, "w") as label_file:
             for i in range(len(lines)):
                 if len(lines[i]) == 1:
-                    current_sub = ent_dict[lines[i][0]]
+                    current_sub = ent_dict[lines[i][0]] if args.gen_ids else lines[i][0]
                     continue
 
                 num_args = len(lines[i]) - 1
                 for j in range(1, num_args):
-                    current_rel = rel_dict[lines[i][0]]
-                    data_file.write(str(current_sub) + "\t" + str(current_rel) + "\t" + str(ent_dict[lines[i][j]]) + "\n")
+                    current_rel = rel_dict[lines[i][0]] if args.gen_ids else lines[i][0]
+                    current_obj = ent_dict[lines[i][j]] if args.gen_ids else lines[i][j]
+                    data_file.write(str(current_sub) + "\t" + str(current_rel) + "\t" + str(current_obj) + "\n")
                     label_file.write(str(lines[i][-1]) + "\n")
     
     def save_no_labels():
         with open(path, "w") as data_file:
             for i in range(len(lines)):
                 if len(lines[i]) == 1:
-                    current_sub = ent_dict[lines[i][0]]
+                    current_sub = ent_dict[lines[i][0]] if args.gen_ids else lines[i][0]
                     continue
 
                 num_args = len(lines[i])
                 for j in range(1, num_args):
-                    current_rel = rel_dict[lines[i][0]]
-                    data_file.write(str(current_sub) + "\t" + str(current_rel) + "\t" + str(ent_dict[lines[i][j]]) + "\n")
+                    current_rel = rel_dict[lines[i][0]] if args.gen_ids else lines[i][0]
+                    current_obj = ent_dict[lines[i][j]] if args.gen_ids else lines[i][j]
+                    data_file.write(str(current_sub) + "\t" + str(current_rel) + "\t" + str(current_obj) + "\n")
 
     print("*** Reconstructing KG using IDs...")
     start = time.time()
 
-    if labels:
+    if args.labels:
         save_with_labels()
     else:
         save_no_labels()
