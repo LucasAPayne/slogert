@@ -39,7 +39,7 @@ def post_process(args):
         save_data(args, path, lines)
     
     end = time.time()
-    print("*** Post-processing completed in {:2f}s".format(end - start))
+    print("*** Post-processing completed in {:.2f}s".format(end - start))
     print("****** End of post-processing")
 
 """
