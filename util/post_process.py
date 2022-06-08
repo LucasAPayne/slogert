@@ -11,6 +11,7 @@ Note also that the knowledge graph can also be labeled, as in a testing dataset
 
 import os
 import shlex
+import string
 import time
 from pathlib import Path
 
@@ -41,6 +42,15 @@ def post_process(args):
     end = time.time()
     print("*** Post-processing completed in {:.2f}s".format(end - start))
     print("****** End of post-processing")
+
+"""
+Determine whether an entity is valid
+Currently, an entity is valid if it is not punctuation or whitespace
+entity: entity to evaluate
+"""
+def is_valid_entity(entity: str):
+    return entity not in string.punctuation
+
 
 """
 Assign IDs to each entity and relation in the KG.
@@ -86,6 +96,9 @@ def gen_ids(args, in_path, ttl_name):
             # If there are two or more things, the first is the relation and the rest are object entities
             for i in range(len(lines)):
                 if len(lines[i]) == 1 and lines[i][0] not in ent_ids:
+                    if not is_valid_entity(lines[i][0]):
+                        # lines[i].remove(lines[i][0])
+                        continue
                     ent_ids[lines[i][0]] = ent_count
                     ent_count += 1
                 elif len(lines[i]) > 1:
@@ -96,6 +109,9 @@ def gen_ids(args, in_path, ttl_name):
                     # If data is labeled, last item will be label, so discard
                     num_args = len(lines[i]) - 1 if args.labels else len(lines[i])
                     for j in range(1, num_args):
+                        if not is_valid_entity(lines[i][j]):
+                            # lines[i].remove(lines[i][j])
+                            continue
                         if lines[i][j] not in ent_ids:
                             ent_ids[lines[i][j]] = ent_count
                             ent_count += 1
@@ -123,29 +139,31 @@ def save_data(args, path, lines, ent_dict=None, rel_dict=None):
         # For every object entity in that line, make a new triple
         with open(path, "w") as data_file, open(label_path, "w") as label_file:
             for i in range(len(lines)):
-                if len(lines[i]) == 1:
+                if len(lines[i]) == 1 and is_valid_entity(lines[i][0]):
                     current_sub = ent_dict[lines[i][0]] if args.gen_ids else lines[i][0]
                     continue
 
                 num_args = len(lines[i]) - 1
                 for j in range(1, num_args):
-                    current_rel = rel_dict[lines[i][0]] if args.gen_ids else lines[i][0]
-                    current_obj = ent_dict[lines[i][j]] if args.gen_ids else lines[i][j]
-                    data_file.write(str(current_sub) + "\t" + str(current_rel) + "\t" + str(current_obj) + "\n")
-                    label_file.write(str(lines[i][-1]) + "\n")
+                    if is_valid_entity(lines[i][j]):
+                        current_rel = rel_dict[lines[i][0]] if args.gen_ids else lines[i][0]
+                        current_obj = ent_dict[lines[i][j]] if args.gen_ids else lines[i][j]
+                        data_file.write(str(current_sub) + "\t" + str(current_rel) + "\t" + str(current_obj) + "\n")
+                        label_file.write(str(lines[i][-1]) + "\n")
     
     def save_no_labels():
         with open(path, "w") as data_file:
             for i in range(len(lines)):
-                if len(lines[i]) == 1:
+                if len(lines[i]) == 1 and is_valid_entity(lines[i][0]):
                     current_sub = ent_dict[lines[i][0]] if args.gen_ids else lines[i][0]
                     continue
 
                 num_args = len(lines[i])
                 for j in range(1, num_args):
-                    current_rel = rel_dict[lines[i][0]] if args.gen_ids else lines[i][0]
-                    current_obj = ent_dict[lines[i][j]] if args.gen_ids else lines[i][j]
-                    data_file.write(str(current_sub) + "\t" + str(current_rel) + "\t" + str(current_obj) + "\n")
+                    if is_valid_entity(lines[i][j]):
+                        current_rel = rel_dict[lines[i][0]] if args.gen_ids else lines[i][0]
+                        current_obj = ent_dict[lines[i][j]] if args.gen_ids else lines[i][j]
+                        data_file.write(str(current_sub) + "\t" + str(current_rel) + "\t" + str(current_obj) + "\n")
 
     print("*** Reconstructing KG using IDs...")
     start = time.time()
